@@ -1,0 +1,18 @@
+.grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.grid-line {
+  display: flex;
+  flex-direction: row;
+}
+
+.pixel {
+  padding:8px;
+  border: 1px solid #0000002e;
+}
+
+.hovered {
+  background-color: #0000002e;
+}
