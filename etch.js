@@ -34,43 +34,76 @@ function newGrid() {
 }
 
 function pixelActivate (e) {
-  e.target.classList.add('hovered');
+  // e.target.classList.add('hovered');
+  console.log(e);
+  e.target.setAttribute('style', 'background-color: rgba(40, 40, 40, 0.1);');
 }
 
-function pixelColor (target) {
-  // choose a random hex color
-  // set setAttribute from there
-  console.log(target);
-  target.style.backgroundColor = 'blue';
+function pixelColor (e) {
+  // e.target.classList.remove('hovered');
+  let rand1 = Math.floor(Math.random() * 360);
+
+  e.target.style.backgroundColor = `hsla(${rand1}, 100%, 70%, 0.6)`;
 }
 
-function toggleColor (e) {
+function pixelShade (e) {
+  let color = e.target.style.backgroundColor;
 
-  let addColor = function (e) {
-    // add event listener with pixel color
-    // it should toggle the 'color' class and then add the event listener
-    e.classList.toggle('color');
-
-    let passTarget = function() {
-      pixelColor(e);
-    }
-
-    if (e.classList.contains('color')) {
-      e.addEventListener('mouseenter', passTarget);
-    } else {
-      e.removeEventListener('mouseenter', passTarget);
-    }
-
+  if (color == "") {
+    pixelActivate(e);
+  } else {
+    let colorSplit = color.split(',');
+    let last = colorSplit.pop();
+    last = last.substring(0, last.length-1)
+    let newAlpha = +last + 0.1;
+    // console.log(`${colorSplit.join(', ')}, ${newAlpha})`);
+    e.target.style.backgroundColor = `${colorSplit.join(', ')}, ${newAlpha})`
   }
 
-  let which = e.target.value
-  let pixels = Array.from(container.querySelectorAll('.pixel'));
-
-  // depending on the value of var. which, it either passes the function
-  // that calls for the color or the shade
-  pixels.forEach(addColor);
 }
 
+function toggleColor () {
+  let pixels = Array.from(container.querySelectorAll('.pixel'));
+  pixels.forEach( function(e) {
+    e.classList.toggle('color');
+    if (e.classList.contains('color')) {
+      e.classList.remove('shade')
+      e.removeEventListener('mouseenter', pixelShade);
+      e.addEventListener('mouseenter', pixelColor);
+    } else if (!(e.classList.contains('color'))) {
+      e.removeEventListener('mouseenter', pixelColor);
+    }
+  });
+}
+
+function toggleShading () {
+  shadeBtn.innerText = `${shadeBtn.innerText}: On`;
+  shadeBtn.innerText = 'Shade';
+  
+  let pixels = Array.from(container.querySelectorAll('.pixel'));
+  pixels.forEach( function(e) {
+    e.classList.toggle('shade');
+
+    if (e.classList.contains('shade')) {
+
+      e.removeEventListener('mouseenter', pixelActivate);
+      e.removeEventListener('mouseenter', pixelColor);
+      e.addEventListener('mouseenter', pixelShade);
+
+    } else if (!(e.classList.contains('shade'))) {
+
+      e.removeEventListener('mouseenter', pixelShade);
+
+      if (e.classList.contains('color')) {
+        e.addEventListener('mouseenter', pixelShade);
+        e.addEventListener('mouseenter', pixelcolor);
+      } else {
+        e.addEventListener('mouseenter', pixelShade);
+      }
+
+    }
+  });
+}
 
 const clearBtn = document.querySelector('.clear');
 const colorBtn = document.querySelector('.color');
@@ -78,7 +111,6 @@ const shadeBtn = document.querySelector('.shade');
 
 clearBtn.addEventListener('click', newGrid);
 colorBtn.addEventListener('click', toggleColor);
-
-
+shadeBtn.addEventListener('click', toggleShading);
 
 initialGrid();
