@@ -18,7 +18,6 @@ function initialGrid() {
 
 function newGrid() {
 
-  // let userChoice = prompt('Choose between 16-64 pixels');
   let width = height = prompt('Choose between 16-64 pixels');
   container.innerHTML = "";
 
@@ -34,8 +33,6 @@ function newGrid() {
 }
 
 function pixelActivate (e) {
-  // e.target.classList.add('hovered');
-  console.log(e);
   e.target.setAttribute('style', 'background-color: rgba(40, 40, 40, 0.1);');
 }
 
@@ -56,35 +53,51 @@ function pixelShade (e) {
     let last = colorSplit.pop();
     last = last.substring(0, last.length-1)
     let newAlpha = +last + 0.1;
-    // console.log(`${colorSplit.join(', ')}, ${newAlpha})`);
     e.target.style.backgroundColor = `${colorSplit.join(', ')}, ${newAlpha})`
   }
 
 }
 
 function toggleColor () {
+
   let pixels = Array.from(container.querySelectorAll('.pixel'));
   pixels.forEach( function(e) {
     e.classList.toggle('color');
+
     if (e.classList.contains('color')) {
-      e.classList.remove('shade')
+
+      colorBtn.innerText = "Rainbow: On";
+      shadeBtn.innerText = "Shade: Off";
+
+      e.classList.remove('shade');
+
+      e.removeEventListener('mouseenter', pixelActivate);
       e.removeEventListener('mouseenter', pixelShade);
       e.addEventListener('mouseenter', pixelColor);
+
     } else if (!(e.classList.contains('color'))) {
+
+      colorBtn.innerHTML = "Rainbow: Off";
       e.removeEventListener('mouseenter', pixelColor);
+      e.addEventListener('mouseenter', pixelActivate);
+
     }
+
   });
 }
 
 function toggleShading () {
-  shadeBtn.innerText = `${shadeBtn.innerText}: On`;
-  shadeBtn.innerText = 'Shade';
-  
+
   let pixels = Array.from(container.querySelectorAll('.pixel'));
   pixels.forEach( function(e) {
     e.classList.toggle('shade');
 
     if (e.classList.contains('shade')) {
+
+      shadeBtn.innerText = "Shade: On";
+      colorBtn.innerText = "Rainbow: Off";
+
+      e.classList.remove('color');
 
       e.removeEventListener('mouseenter', pixelActivate);
       e.removeEventListener('mouseenter', pixelColor);
@@ -92,14 +105,9 @@ function toggleShading () {
 
     } else if (!(e.classList.contains('shade'))) {
 
+      shadeBtn.innerText = "Shade: Off";
       e.removeEventListener('mouseenter', pixelShade);
-
-      if (e.classList.contains('color')) {
-        e.addEventListener('mouseenter', pixelShade);
-        e.addEventListener('mouseenter', pixelcolor);
-      } else {
-        e.addEventListener('mouseenter', pixelShade);
-      }
+      e.addEventListener('mouseenter', pixelActivate);
 
     }
   });
