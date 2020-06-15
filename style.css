@@ -5,12 +5,8 @@
 }
 
 .pixel {
-  padding: 2px;
+  /* padding: 2px; */
   border: 1px solid #0000002e;
-}
-
-.hovered {
-  background-color: #0000002e;
 }
 
 button {
